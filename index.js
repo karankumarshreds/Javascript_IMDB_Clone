@@ -19,8 +19,6 @@ const fetchData =  async (searchTerm) => {
     return response.data.Search;
 }
 
-const input = document.querySelector('input');
-
 //ONE way of delaying the API request to wait 
 //until the user stops typing // NOT USED HERE ! 
 // let timeoutId;
@@ -51,26 +49,60 @@ const debounce = (func) => {
     }
 };
 
-//now we can actually pass in the function
-//to the above function.
-//THE SOLE PURPOSE OF USING THE ABOVE FUNCTION IS 
-//THAT WE COULD HAVE MULTIPLE INSTANCES WHERE WE MIGHT NEED
-//TO DELAY A CERTAIN FUNCTION
 
+
+
+//Generating the HTML using JavaScript 
+//for code reusability
+const root = document.querySelector('.autocomplete');
+root.innerHTML = `
+    <label><b>Search For a Movie</b></label>
+    <input class="input"></input>
+    <div class="dropdown">
+        <div class="dropdown-menu">
+            <div class="dropdown-content results"</div>
+        </div>
+    </div>
+`;
+
+const input = document.querySelector('input');
+const dropdown = document.querySelector('.dropdown');
+const resultsWrapper = document.querySelector('.results');
 const body = document.querySelector('body');
+
 const onInput = async (e) => {
+    resultsWrapper.innerHTML = '';
     let searchTerm = e.target.value;
     //fetch data being an async function we need 
     //to await for it's response and hence treat onInput as 
     //an ASYNC function as well
     const movies = await fetchData(searchTerm);
+    dropdown.classList.add('is-active'); //to expand the drop down 
     for (let movie of movies){
-        const div = document.createElement('div');
-        div.innerHTML = `
+        const a = document.createElement('a');
+        a.classList.add('dropdown-item')
+        a.innerHTML = `
             <img src="${movie.Poster}"></img>
-            <h1>${movie.Title}</h1>
+            ${movie.Title}
         `;
-        document.querySelector('#target').appendChild(div);
+        resultsWrapper.appendChild(a);
     }
 }
+
+//THE SOLE PURPOSE OF USING THE ABOVE FUNCTION IS 
+//THAT WE COULD HAVE MULTIPLE INSTANCES WHERE WE MIGHT NEED
+//TO DELAY A CERTAIN FUNCTION
 input.addEventListener('input', debounce(onInput));
+
+
+//<div class="dropdown is-active">
+//<input/>
+//       <div class="dropdown-menu">
+//          <div class="dropdown-content">
+//            <a class="dropdown-item">Movie #1</a>
+//            <a class="dropdown-item">Movie #2</a>
+//            <a class="dropdown-item">Movie #3</a>
+//          </div>
+//        </div>
+//      </div>
+//<div id="target"></div>
