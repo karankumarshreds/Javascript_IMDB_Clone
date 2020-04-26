@@ -84,6 +84,7 @@ const onClick = async (movie, detailArea) => {
 const movieTemplate = (detail) => {
     return `
         <article aclass="media">
+        <div class="container info">
             <figure class="media-left">
                 <p class="image">
                     <img src="${detail.Poster}">
@@ -96,9 +97,10 @@ const movieTemplate = (detail) => {
                     <p>${detail.Plot}</p>
                 </div>
             </div>
+        </div>
         </article>
         <article class="notification is-primary">
-            <p class="title">${detail.Awards}</p>
+            <p class="title awards">${detail.Awards}</p>
             <p class="subtitles">Awards</p>
         </article>
         <article class="notification is-primary">

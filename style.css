@@ -46,3 +46,15 @@ figure .image img {
   height: 50px;
   margin-right: 10px;
 }
+
+.info{
+  height: 400px !important;
+}
+
+.media-content{
+  padding-top: 30px !important;
+}
+
+.awards{
+  height:80px !important;
+}
