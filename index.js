@@ -1,54 +1,71 @@
-const fetchData =  async (searchTerm) => {
-    const url = 'http://www.omdbapi.com/'
-    const response = await axios.get(url, {
-        //params would append all these values to the URL
-        //it's a feature of axios 
-        params: {
-            apikey: 'b5c59523',
-            s: searchTerm
+//this will be concatinated with latter functions and passed 
+//into the widget function. We are using this to avoid redundancy!
+const autoCompleteConfig = {
+    renderOption: (movie) => {
+        const imgSrc = movie.Poster == "N/A" ? '' : movie.Poster;
+        return `
+                <img src="${imgSrc}"></img>
+                ${movie.Title} (${movie.Year})
+            `;
+    },
+
+    onOptionSelect: (movie) => {
+        onClick(movie);
+    }, //this way you could tell widget what 
+       //custom funtion you would wanna run
+       //if the user clicks on an item from 
+       //the widget dropdown
+    
+       inputFieldValue: (movie) => {
+        return movie.Title;
+    },
+
+    fetchData: async (searchTerm) => {
+        const url = 'http://www.omdbapi.com/'
+        const response = await axios.get(url, {
+            //params would append all these values to the URL
+            //it's a feature of axios 
+            params: {
+                apikey: 'b5c59523',
+                s: searchTerm
+            }
+            //final url requested by axios: 
+            //http://www.omdbapi.com/?apikey=b5c59523&s=avengers
+        });
+        //Error is something this API throws when it 
+        //doesn't find any match, so just handling that!
+        if (response.data.Error){
+            return [];
         }
-        //final url requested by axios : 
-        //http://www.omdbapi.com/?apikey=b5c59523&s=avengers
-    });
+        return response.data.Search;
+    },
+};
 
-    //Error is something this API throws when it 
-    //doesn't find any match, so just handling that!
-    if (response.data.Error){
-        return [];
-    }
-    return response.data.Search;
-}
 
-//ONE way of delaying the API request to wait 
-//until the user stops typing // NOT USED HERE ! 
-// // let timeoutId;
-// const onIn = (e) => {
-//     if (timeoutId) {
-//         clearTimeout(timeoutId);
-//     }
-//     timeoutId = setTimeout(() => {
-//         let searchTerm = e.target.value;
-//         fetchData(searchTerm);
-//     }, 2000)
-// };
-// input.addEventListener('input', onInput);    //NOT CALLIING IT!
 
+//using/calling the reusable widgets
 createAutoComplete({
-    root: document.querySelector('.autocomplete')
-});
+    ...autoCompleteConfig,  //add everything from the above 
+                            //object and prepend it here
+    root: document.querySelector('#left-autocomplete'),
+},);
+
+
+//using/calling the reusable widgets
 createAutoComplete({
-    root: document.querySelector('.autocomplete-two')
-});
-createAutoComplete({
-    root: document.querySelector('.autocomplete-three')
-});
+    ...autoCompleteConfig,  //add everything from the above 
+                            //object and prepend it here
+    root: document.querySelector('#right-autocomplete'),
+},);
+
+
 
 const onClick = async (id) => {
     const url = 'http://www.omdbapi.com/'
     const response = await axios.get(url, { 
         params : {
             apikey : 'b5c59523',  
-            i : id
+            i : id.imdbID
         }
     })
     const template = movieTemplate(response.data);
