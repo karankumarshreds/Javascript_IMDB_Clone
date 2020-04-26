@@ -1,7 +1,9 @@
+
 .tutorial {
   width: 600px;
   text-align: center;
   margin: auto;
+  
 }
 
 figure.image {
@@ -58,3 +60,9 @@ figure .image img {
 .awards{
   height:80px !important;
 }
+
+main{
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}
+
