@@ -8,13 +8,6 @@ const autoCompleteConfig = {
                 ${movie.Title} (${movie.Year})
             `;
     },
-
-    onOptionSelect: (movie) => {
-        onClick(movie);
-    }, //this way you could tell widget what 
-       //custom funtion you would wanna run
-       //if the user clicks on an item from 
-       //the widget dropdown
     
        inputFieldValue: (movie) => {
         return movie.Title;
@@ -48,6 +41,14 @@ createAutoComplete({
     ...autoCompleteConfig,  //add everything from the above 
                             //object and prepend it here
     root: document.querySelector('#left-autocomplete'),
+
+    onOptionSelect: (movie) => {
+        document.querySelector('.tutorial').classList.add('is-hidden'); //bulma class
+        onClick(movie, document.querySelector('#left-summary'));
+    }, //this way you could tell widget what 
+       //custom funtion you would wanna run
+       //if the user clicks on an item from 
+       //the widget dropdown
 },);
 
 
@@ -56,20 +57,28 @@ createAutoComplete({
     ...autoCompleteConfig,  //add everything from the above 
                             //object and prepend it here
     root: document.querySelector('#right-autocomplete'),
+
+    onOptionSelect: (movie) => {
+        document.querySelector('.tutorial').classList.add('is-hidden'); //bulma class
+        onClick(movie, document.querySelector('#right-summary'));
+    }, //this way you could tell widget what 
+       //custom funtion you would wanna run
+       //if the user clicks on an item from 
+       //the widget dropdown
 },);
 
 
 
-const onClick = async (id) => {
+const onClick = async (movie, detailArea) => {
     const url = 'http://www.omdbapi.com/'
     const response = await axios.get(url, { 
         params : {
             apikey : 'b5c59523',  
-            i : id.imdbID
+            i : movie.imdbID
         }
     })
     const template = movieTemplate(response.data);
-    document.querySelector(".template").innerHTML = template;
+    detailArea.innerHTML = template;
 };
 
 const movieTemplate = (detail) => {
